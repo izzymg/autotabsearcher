@@ -3,3 +3,5 @@ Periodically reloads and searches a tab for text. Sounds an alarm and sends a no
 
 #### Download the add-on for Firefox:
 https://addons.mozilla.org/en-us/firefox/addon/auto-tab-searcher/
+
+Master branch is the last submitted to Mozilla and found on mozilla.org.
