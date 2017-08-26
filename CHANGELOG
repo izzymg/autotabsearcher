@@ -1,5 +1,8 @@
 # Auto Tab Searcher CHANGELOG
 
+v1.2
+- Restructure of internal files, no user changes
+
 v1.1
 - Alarm audio now plays when term is found
 - Added a help page
