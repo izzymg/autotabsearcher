@@ -69,7 +69,7 @@ function injectTabSearch(tabId, searchInfo) {
 
     //Inject script into tab
     var executing = browser.tabs.executeScript(tabId, {
-        file: 'content-script.js'
+        file: 'scripts/content-script.js'
     });
 
     window.setTimeout(
@@ -119,7 +119,7 @@ function notify(searchInfo) {
 //Statup
 (function () {
 
-    alarmAudio = new Audio('alarm.wav');
+    alarmAudio = new Audio('rsc/av/alarm.wav');
     alarmAudio.loop = true;
 
     //Listen for requests made by the config menu
