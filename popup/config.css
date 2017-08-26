@@ -1,0 +1,50 @@
+/*
+	Copyright (C) 2016 izzymg
+	This file is part of Auto Tab Searcher.
+    Auto Tab Searcher is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    Auto Tab Searcher is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with Auto Tab Searcher.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+body {
+    width: 300px;
+    background: #F5F5F5;
+}
+
+.headingWr {
+    font-size: 18px;
+    padding: 2px 5px;
+}
+
+.subheadingWr {
+    font-size: 12px;
+}
+
+.titleSmWr {
+    font-size: 13px;
+    padding-bottom: 10px;
+}
+
+.explain, .explainWr {
+    font-size: 14px;
+}
+
+.activeTabWr {
+    font-size: 12px;
+}
+
+.activeTabWr button {
+    display: block;
+    font-size: 11px;
+}
+
+.infoItem {
+    font-size: 10px;
+}

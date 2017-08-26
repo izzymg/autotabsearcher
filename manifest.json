@@ -1,0 +1,27 @@
+{
+    "manifest_version": 2,
+    "name": "Auto Tab Searcher",
+    "version": "1.2",
+    "license": "GPL-3.0",
+    "description": "Notification and alarm sound when a string term appears on a page",
+    "icons": {
+        "48": "icons/autotabsearcher-48.png",
+        "96": "icons/autotabsearcher-96.png"
+    },
+    "permissions": [
+        "activeTab",
+        "tabs",
+        "<all_urls>",
+        "notifications"
+    ],
+    "browser_action": {
+        "default_icon": "icons/autotabsearcher-48.png",
+        "default_title": "Auto Tab Searcher",
+        "default_popup": "popup/config.html"
+    },
+    "background": {
+        "scripts": [
+            "background.js"
+        ]
+    }
+}

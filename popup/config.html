@@ -1,0 +1,72 @@
+<!--
+Copyright (C) 2016 izzymg This file is part of Auto Tab Searcher. Auto Tab Searcher is free software: you can redistribute
+it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either
+version 3 of the License, or (at your option) any later version. Auto Tab Searcher is distributed in the hope that it will
+be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along
+with Auto Tab Searcher. If not, see <http://www.gnu.org/licenses/>. -->
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf8">
+    <link rel="stylesheet" type="text/css" href="common.css" />
+    <link rel="stylesheet" type="text/css" href="config.css" />
+    <script src="config.js">
+
+    </script>
+</head>
+
+<body>
+
+    <div class="infoWr">
+        <button id="infoBtn">?</button>
+    </div>
+
+    <div class="headingWr center">
+        <span class="heading"> Auto Tab Searcher </span>
+    </div>
+
+    <div class="subheadingWr center">
+        <span class="subheading"> The selected tab will be reloaded at the set interval. When the term is found, it will sound an alarm. </span>
+    </div>
+
+    <hr>
+
+    <div id="searchForm">
+
+        <div class="explainWr center">
+            <span class="explain"> Tab to watch </span>
+            <select class="linedInput" name="selectTabList" id="selectTabList">
+            </div>
+
+            </select>
+            <form>
+
+                <span> Search term (Use Regex: </span>
+                <input type="checkbox" id="regexUsedIn"> <span> ) </span>
+                <input class="linedInput" type="text" value="Default" id="searchTermIn">
+
+
+                <span class="explain"> Reload interval (>3, seconds) </span>
+                <input class="linedInput" type="number" value="20" min="3" id="intervalIn">
+
+
+                <input type="button" class="btn" id="subm" value="Start">
+
+            </form>
+        </div>
+
+        <hr>
+
+        <div class="headingWr center">
+            <span class="heading"> Monitored tabs: </span>
+        </div>
+
+        <ol id="tabsMonitored">
+        </ol>
+
+</body>
+
+</html>

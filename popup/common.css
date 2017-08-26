@@ -1,0 +1,69 @@
+/*
+	Copyright (C) 2016 izzymg
+	This file is part of Auto Tab Searcher.
+    Auto Tab Searcher is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    Auto Tab Searcher is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with Auto Tab Searcher.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+html {
+    font-family: sans-serif;
+}
+
+.center {
+    text-align: center;
+}
+
+.infoWr {
+    position: relative;
+    float: right;
+}
+
+#infoBtn {
+    border: none;
+    outline: none;
+    background: #EDE4EC;
+    cursor: pointer;
+}
+
+.heading, .headingSm {
+    color: #C26E98;
+}
+
+.headingWr {
+    padding: 2px 5px;
+}
+
+.subheadingWr {
+    padding: 5px 5px;
+    font-style: italic;
+}
+
+.linedInput {
+    width: 80%;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border: none;
+    outline: none;
+    background: #383838;
+    color: #fff;
+    text-align: center;
+    display: block;
+    margin: 5px auto;
+}
+
+hr {
+    width: 83%;
+    border: 0.5px solid #707070;
+}
+
+ol {
+    list-style: decimal;
+}

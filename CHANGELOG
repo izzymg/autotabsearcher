@@ -1,0 +1,15 @@
+# Auto Tab Searcher CHANGELOG
+
+v1.1
+- Alarm audio now plays when term is found
+- Added a help page
+- Regex toggle switch
+- Regex key characters no longer need escaping without regex enabled
+- Added more secure checks to the interval setting
+- Added more detailed information to the active tabs list
+
+v1.0
+- Initial Release
+- Notification pushed to desktop when string term is found
+- Multiple tab search UI
+
