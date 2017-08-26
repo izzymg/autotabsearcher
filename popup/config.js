@@ -13,8 +13,20 @@
     along with Auto Tab Searcher.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-//List of all browser tabs
+//Fetches list of all tabs in the current window
 function genTabList() {
+
+    //Get all tabs in current window
+    let querying = browser.tabs.query({ currentWindow: true });
+    //Once query finishes, send to render on document
+    querying.then(
+        (tabs) => { renderTabList(tabs); }
+    );
+}
+
+//Creates and adds list item elements of tabs passed in
+function renderTabList(tabList) {
+
     let tabListbox = document.getElementById("selectTabList");
 
     //Clear the list
@@ -22,28 +34,25 @@ function genTabList() {
         tabListbox.removeChild(tabListbox.firstChild);
     }
 
-    //Get all tabs in current window
-    let querying = browser.tabs.query({ currentWindow: true });
-    querying.then(
-        (tabs) => {
-            for (let i = 0; i < tabs.length; i++) {
 
-                //Create a list item for the tab
-                let newOption = document.createElement("option");
-                newOption.value = tabs[i].id;
-                newOption.textContent = tabs[i].title;
-                tabListbox.appendChild(newOption);
-            }
-        });
+    for (let i = 0; i < tabList.length; i++) {
+
+        //Create a list item element for the tab
+        let newOption = document.createElement("option");
+        newOption.value = tabList[i].id;
+        newOption.textContent = tabList[i].title;
+        //Add the list item element to the tab list
+        tabListbox.appendChild(newOption);
+    }
 }
 
-//Request the monitored tabs from the background script and pass them to the render function
-function genActiveTabList() {
+//Request the currently monitored tabs from the background script and pass them to the render function
+function genMonitoredTabList() {
 
     let sending = browser.runtime.sendMessage({ msg: "requestlist" });
     sending.then(
         (msg) => {
-            renderActiveTabList(msg.tabs);
+            renderMonitoredTabList(msg.tabs);
         },
         (err) => {
             console.log(err);
@@ -51,48 +60,49 @@ function genActiveTabList() {
     );
 }
 
-function renderActiveTabList(tabStack) {
+//Creates and adds list item elements of currently monitored tabs passed in
+function renderMonitoredTabList(monitoredTabs) {
 
-    //Leave if there are no tabs monitored
-    if (!tabStack) return;
+    if (!monitoredTabs) return;
 
-    let domList = document.getElementById("tabsMonitored");
+    let monitoredTabsList = document.getElementById("monitoredTabsList");
 
     //Clear out list display
-    while (domList.firstChild) {
-        domList.removeChild(domList.firstChild);
+    while (monitoredTabsList.firstChild) {
+        monitoredTabsList.removeChild(monitoredTabsList.firstChild);
     }
 
     /* Create a list object and stop button for each returned
         tab being monitored */
-    for (let i = 0; i < tabStack.length; i++) {
+    for (let i = 0; i < monitoredTabs.length; i++) {
 
         let itemWrapper = document.createElement("div");
         itemWrapper.className = "activeTabWr";
         let titleItem = document.createElement("li");
-        titleItem.textContent = tabStack[i].tabTitle;
+        titleItem.textContent = monitoredTabs[i].tabTitle;
         let infoItem = document.createElement("span");
-        infoItem.textContent = "'" + tabStack[i].searchInfo.term + "' - " + tabStack[i].interval + " seconds";
+        infoItem.textContent = "'" + monitoredTabs[i].searchInfo.term + "' - " + monitoredTabs[i].interval + " seconds";
         infoItem.className = "infoItem";
 
         let removeTabBtn = document.createElement("button");
         removeTabBtn.textContent = "Stop";
         //Handler for the stop button
         removeTabBtn.onclick = () => {
-            removeTab(tabStack[i].tabId);
+            stopMonitoringTab(monitoredTabs[i].tabId);
         }
 
         itemWrapper.appendChild(titleItem);
         itemWrapper.appendChild(infoItem);
         itemWrapper.appendChild(removeTabBtn);
-        domList.appendChild(itemWrapper);
+        //Add the list item element to the monitored tabs list
+        monitoredTabsList.appendChild(itemWrapper);
     }
 }
 
 //Reqest the tab selected in the popup now be added to the monitoring list
-function addTab() {
+function monitorTab() {
 
-    //Grab options from popup
+    //Grab selected option from popup
     let selectedTab = document.getElementById("selectTabList").selectedOptions[0];
     let tabId = parseInt(selectedTab.value);
     let tabTitle = selectedTab.textContent;
@@ -107,7 +117,7 @@ function addTab() {
 
     //Send to the background script and ask for it to be monitored
     let sending = browser.runtime.sendMessage({
-        msg: "addtab",
+        msg: "monitortab",
         tabTitle: tabTitle,
         tabId: tabId,
         searchInfo: searchInfo,
@@ -115,7 +125,7 @@ function addTab() {
     });
     sending.then(
         (msg) => {
-            genActiveTabList();
+            genMonitoredTabList();
         },
         (err) => {
             console.log(err);
@@ -124,12 +134,14 @@ function addTab() {
 }
 
 //Request the tab associated with this ID be removed from monitoring
-function removeTab(tabId) {
+function stopMonitoringTab(tabId) {
 
-    let sending = browser.runtime.sendMessage({ msg: "removetab", tabId: tabId });
+    //Background script will remove the tab off the monitored tabs array and stop its timer 
+    let sending = browser.runtime.sendMessage({ msg: "stopmonitoringtab", tabId: tabId });
     sending.then(
         (msg) => {
-            genActiveTabList();
+            //Now that the tab is gone internally, we need to refresh and redisplay our front-end list
+            genMonitoredTabList();
         },
         (err) => {
             console.log(err);
@@ -143,7 +155,7 @@ function displayHelp() {
 
 function refresh() {
     genTabList();
-    genActiveTabList();
+    genMonitoredTabList();
 }
 
 //Popup loaded, this happens everytime the button is clicked
@@ -152,7 +164,7 @@ window.onload = () => {
     refresh();
 
     //Submit pressed
-    document.getElementById("subm").onclick = addTab;
+    document.getElementById("subm").onclick = monitorTab;
 
     //Info button pressed
     document.getElementById("infoBtn").onclick = displayHelp;

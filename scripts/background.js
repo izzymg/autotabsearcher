@@ -18,7 +18,7 @@ var tabStack = [];
 var alarmAudio;
 
 
-function addTab(tabId, tabTitle, searchInfo, interval) {
+function monitorTab(tabId, tabTitle, searchInfo, interval) {
 
     //Check for a duplicate ID in tabStack
     for (let i = 0; i < tabStack.length; i++) {
@@ -49,12 +49,12 @@ function reloadTab(tabId) {
         null,
         //Usually procs due to tab being closed
         (err) => {
-            removeTab(tabId);
+            stopMonitoringTab(tabId);
         }
     );
 }
 
-function removeTab(tabId) {
+function stopMonitoringTab(tabId) {
     for (let i = 0; i < tabStack.length; i++) {
         if (tabStack[i].tabId == tabId) {
             //Stop the timer id associated with the tab
@@ -94,7 +94,7 @@ function requestSearch(tabId, searchInfo) {
             //Found the term
             if (response.result == true) {
                 notify(searchInfo);
-                removeTab(tabId);
+                stopMonitoringTab(tabId);
             }
         },
         (err) => {
@@ -129,12 +129,12 @@ function notify(searchInfo) {
             if (request.msg == "requestlist") {
                 //Popup requesting the tab information
                 sendResponse({ tabs: tabStack });
-            } else if (request.msg == "addtab") {
-                //Popup requesting to add a new tab
-                addTab(request.tabId, request.tabTitle, request.searchInfo, request.interval);
-            } else if (request.msg == "removetab") {
-                //Popup requesting to remove a tab from monitoring
-                removeTab(request.tabId);
+            } else if (request.msg == "monitortab") {
+                //Popup requesting to monitor a new tab
+                monitorTab(request.tabId, request.tabTitle, request.searchInfo, request.interval);
+            } else if (request.msg == "stopmonitoringtab") {
+                //Popup requesting to stop monitoring a tab
+                stopMonitoringTab(request.tabId);
             } else if (request.msg == "searchdone") {
                 //Content script finished searching
                 handleSearch(request.result);
@@ -150,7 +150,7 @@ function notify(searchInfo) {
             if (cInfo.status != "complete") return;
 
             for (let i = 0; i < tabStack.length; i++) {
-                //Match the ID to a monitored tab and inject the content script
+                //Match the ID to a monitored tab and inject the search content script
                 if (tabId == tabStack[i].tabId) {
                     injectTabSearch(tabId, tabStack[i].searchInfo);
                 }

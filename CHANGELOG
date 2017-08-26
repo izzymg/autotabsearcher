@@ -1,5 +1,8 @@
 # Auto Tab Searcher CHANGELOG
 
+v1.3
+- Addon permissions fixed
+
 v1.2
 - Restructure of internal files, no user changes
 
