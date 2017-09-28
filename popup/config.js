@@ -23,15 +23,14 @@ function genTabList() {
     }
 
     //Get all tabs in current window
-    let querying = browser.tabs.query({ currentWindow: true });
-    querying.then(
+    browser.tabs.query({ currentWindow: true }).then(
         (tabs) => {
-            for (let i = 0; i < tabs.length; i++) {
+            for (let tab of tabs) {
 
                 //Create a list item for the tab
                 let newOption = document.createElement("option");
-                newOption.value = tabs[i].id;
-                newOption.textContent = tabs[i].title;
+                newOption.value = tab.id;
+                newOption.textContent = tab.title;
                 tabListbox.appendChild(newOption);
             }
         });
@@ -40,8 +39,7 @@ function genTabList() {
 //Request the monitored tabs from the background script and pass them to the render function
 function genActiveTabList() {
 
-    let sending = browser.runtime.sendMessage({ msg: "requestlist" });
-    sending.then(
+    browser.runtime.sendMessage({ msg: "requestlist" }).then(
         (msg) => {
             renderActiveTabList(msg.tabs);
         },
@@ -65,21 +63,21 @@ function renderActiveTabList(tabStack) {
 
     /* Create a list object and stop button for each returned
         tab being monitored */
-    for (let i = 0; i < tabStack.length; i++) {
+    for (let stack of tabStack) {
 
         let itemWrapper = document.createElement("div");
         itemWrapper.className = "activeTabWr";
         let titleItem = document.createElement("li");
-        titleItem.textContent = tabStack[i].tabTitle;
+        titleItem.textContent = stack.tabTitle;
         let infoItem = document.createElement("span");
-        infoItem.textContent = "'" + tabStack[i].searchInfo.term + "' - " + tabStack[i].interval + " seconds";
+        infoItem.textContent = "'" + stack.searchInfo.term + "' - " + stack.interval + " seconds";
         infoItem.className = "infoItem";
 
         let removeTabBtn = document.createElement("button");
         removeTabBtn.textContent = "Stop";
         //Handler for the stop button
         removeTabBtn.onclick = () => {
-            removeTab(tabStack[i].tabId);
+            removeTab(stack.tabId);
         }
 
         itemWrapper.appendChild(titleItem);
@@ -106,14 +104,13 @@ function addTab() {
     if (!interval || isNaN(interval) || interval < 3) return;
 
     //Send to the background script and ask for it to be monitored
-    let sending = browser.runtime.sendMessage({
+    browser.runtime.sendMessage({
         msg: "addtab",
         tabTitle: tabTitle,
         tabId: tabId,
         searchInfo: searchInfo,
         interval: interval
-    });
-    sending.then(
+    }).then(
         (msg) => {
             genActiveTabList();
         },
@@ -126,8 +123,7 @@ function addTab() {
 //Request the tab associated with this ID be removed from monitoring
 function removeTab(tabId) {
 
-    let sending = browser.runtime.sendMessage({ msg: "removetab", tabId: tabId });
-    sending.then(
+    browser.runtime.sendMessage({ msg: "removetab", tabId: tabId }).then(
         (msg) => {
             genActiveTabList();
         },
