@@ -18,11 +18,11 @@ var tabStack = [];
 var alarmAudio;
 
 
-function addTab(tabId, tabTitle, searchInfo, interval) {
+function monitorTab(tabId, tabTitle, searchInfo, interval) {
 
     //Check for a duplicate ID in tabStack
-    for (let i = 0; i < tabStack.length; i++) {
-        if (tabStack[i].tabId == tabId) {
+    for (let stack of tabStack) {
+        if (stack.tabId == tabId) {
             return;
         }
     }
@@ -43,18 +43,16 @@ function addTab(tabId, tabTitle, searchInfo, interval) {
 
 function reloadTab(tabId) {
 
-    var reloading = browser.tabs.reload(tabId);
-
-    reloading.then(
+    var reloading = browser.tabs.reload(tabId).then(
         null,
         //Usually procs due to tab being closed
         (err) => {
-            removeTab(tabId);
+            stopMonitoringTab(tabId);
         }
     );
 }
 
-function removeTab(tabId) {
+function stopMonitoringTab(tabId) {
     for (let i = 0; i < tabStack.length; i++) {
         if (tabStack[i].tabId == tabId) {
             //Stop the timer id associated with the tab
@@ -88,13 +86,12 @@ function injectTabSearch(tabId, searchInfo) {
 //Request the script search and post the result
 function requestSearch(tabId, searchInfo) {
 
-    var sending = browser.tabs.sendMessage(tabId, { msg: "searchinfo", searchInfo: searchInfo });
-    sending.then(
+    var sending = browser.tabs.sendMessage(tabId, { msg: "searchinfo", searchInfo: searchInfo }).then(
         (response) => {
             //Found the term
             if (response.result == true) {
                 notify(searchInfo);
-                removeTab(tabId);
+                stopMonitoringTab(tabId);
             }
         },
         (err) => {
@@ -129,12 +126,12 @@ function notify(searchInfo) {
             if (request.msg == "requestlist") {
                 //Popup requesting the tab information
                 sendResponse({ tabs: tabStack });
-            } else if (request.msg == "addtab") {
-                //Popup requesting to add a new tab
-                addTab(request.tabId, request.tabTitle, request.searchInfo, request.interval);
-            } else if (request.msg == "removetab") {
-                //Popup requesting to remove a tab from monitoring
-                removeTab(request.tabId);
+            } else if (request.msg == "monitortab") {
+                //Popup requesting to monitor a new tab
+                monitorTab(request.tabId, request.tabTitle, request.searchInfo, request.interval);
+            } else if (request.msg == "stopmonitoringtab") {
+                //Popup requesting to stop monitoring a tab
+                stopMonitoringTab(request.tabId);
             } else if (request.msg == "searchdone") {
                 //Content script finished searching
                 handleSearch(request.result);
@@ -149,10 +146,10 @@ function notify(searchInfo) {
             //Ensure tab being updated has finished loading
             if (cInfo.status != "complete") return;
 
-            for (let i = 0; i < tabStack.length; i++) {
-                //Match the ID to a monitored tab and inject the content script
-                if (tabId == tabStack[i].tabId) {
-                    injectTabSearch(tabId, tabStack[i].searchInfo);
+            for (let stack of tabStack) {
+                //Match the ID to a monitored tab and inject the search content script
+                if (tabId == stack.tabId) {
+                    injectTabSearch(tabId, stack.searchInfo);
                 }
             }
         }
