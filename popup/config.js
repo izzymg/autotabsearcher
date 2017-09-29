@@ -17,9 +17,8 @@
 function genTabList() {
 
     //Get all tabs in current window
-    let querying = browser.tabs.query({ currentWindow: true });
     //Once query finishes, send to render on document
-    querying.then(
+    let querying = browser.tabs.query({ currentWindow: true }).then(
         (tabs) => { renderTabList(tabs); }
     );
 }
@@ -49,8 +48,7 @@ function renderTabList(tabList) {
 //Request the currently monitored tabs from the background script and pass them to the render function
 function genMonitoredTabList() {
 
-    let sending = browser.runtime.sendMessage({ msg: "requestlist" });
-    sending.then(
+    let sending = browser.runtime.sendMessage({ msg: "requestlist" }).then(
         (msg) => {
             renderMonitoredTabList(msg.tabs);
         },
@@ -122,23 +120,21 @@ function monitorTab() {
         tabId: tabId,
         searchInfo: searchInfo,
         interval: interval
-    });
-    sending.then(
+    }).then(
         (msg) => {
             genMonitoredTabList();
         },
         (err) => {
             console.log(err);
         }
-    );
+        );
 }
 
 //Request the tab associated with this ID be removed from monitoring
 function stopMonitoringTab(tabId) {
 
     //Background script will remove the tab off the monitored tabs array and stop its timer 
-    let sending = browser.runtime.sendMessage({ msg: "stopmonitoringtab", tabId: tabId });
-    sending.then(
+    let sending = browser.runtime.sendMessage({ msg: "stopmonitoringtab", tabId: tabId }).then(
         (msg) => {
             //Now that the tab is gone internally, we need to refresh and redisplay our front-end list
             genMonitoredTabList();
