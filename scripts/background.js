@@ -53,12 +53,12 @@ function reloadTab(tabId) {
 }
 
 function stopMonitoringTab(tabId) {
-    for (let stack of tabStack) {
-        if (stack.tabId === tabId) {
+    for (let i = 0; i < tabStack.length; i++) {
+        if (tabStack[i].tabId == tabId) {
             //Stop the timer id associated with the tab
-            window.clearInterval(stack.timerId);
+            window.clearInterval(tabStack[i].timerId);
             //Remove it from the tabStack array
-            tabStack.splice(, 1);
+            tabStack.splice(i, 1);
         }
     }
 }
