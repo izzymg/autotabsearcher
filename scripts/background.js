@@ -21,8 +21,8 @@ var alarmAudio;
 function addTab(tabId, tabTitle, searchInfo, interval) {
 
     //Check for a duplicate ID in tabStack
-    for (let t of tabStack) {
-        if (t.tabId === tabId) {
+    for (let i = 0; i < tabStack.length; i++) {
+        if (tabStack[i].tabId == tabId) {
             return;
         }
     }
@@ -43,7 +43,9 @@ function addTab(tabId, tabTitle, searchInfo, interval) {
 
 function reloadTab(tabId) {
 
-    browser.tabs.reload(tabId).then(
+    var reloading = browser.tabs.reload(tabId);
+
+    reloading.then(
         null,
         //Usually procs due to tab being closed
         (err) => {
@@ -53,10 +55,10 @@ function reloadTab(tabId) {
 }
 
 function removeTab(tabId) {
-    for (let stack of tabStack) {
-        if (stack.tabId === tabId) {
+    for (let i = 0; i < tabStack.length; i++) {
+        if (tabStack[i].tabId == tabId) {
             //Stop the timer id associated with the tab
-            window.clearInterval(stack.timerId);
+            window.clearInterval(tabStack[i].timerId);
             //Remove it from the tabStack array
             tabStack.splice(i, 1);
         }
@@ -64,6 +66,7 @@ function removeTab(tabId) {
 }
 
 function injectTabSearch(tabId, searchInfo) {
+
     //Inject script into tab
     var executing = browser.tabs.executeScript(tabId, {
         file: 'scripts/content-script.js'
@@ -85,7 +88,8 @@ function injectTabSearch(tabId, searchInfo) {
 //Request the script search and post the result
 function requestSearch(tabId, searchInfo) {
 
-    browser.tabs.sendMessage(tabId, { msg: "searchinfo", searchInfo: searchInfo }).then(
+    var sending = browser.tabs.sendMessage(tabId, { msg: "searchinfo", searchInfo: searchInfo });
+    sending.then(
         (response) => {
             //Found the term
             if (response.result == true) {
@@ -145,10 +149,10 @@ function notify(searchInfo) {
             //Ensure tab being updated has finished loading
             if (cInfo.status != "complete") return;
 
-            for (let stack of tabStack) {
+            for (let i = 0; i < tabStack.length; i++) {
                 //Match the ID to a monitored tab and inject the content script
-                if (tabId == stack.tabId) {
-                    injectTabSearch(tabId, stack.searchInfo);
+                if (tabId == tabStack[i].tabId) {
+                    injectTabSearch(tabId, tabStack[i].searchInfo);
                 }
             }
         }
