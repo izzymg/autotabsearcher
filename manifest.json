@@ -2,7 +2,6 @@
     "manifest_version": 2,
     "name": "Auto Tab Searcher",
     "version": "1.3",
-    "license": "GPL-3.0",
     "description": "Notification and alarm sound when a string term appears on a page",
     "icons": {
         "48": "rsc/ico/autotabsearcher-48.png",
