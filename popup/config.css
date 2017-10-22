@@ -18,6 +18,10 @@ body {
     background: #F5F5F5;
 }
 
+select option {
+    text-align: left;
+}
+
 .headingWr {
     font-size: 18px;
     padding: 2px 5px;
