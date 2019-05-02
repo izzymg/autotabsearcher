@@ -8,7 +8,6 @@ Master branch is the last submitted to Mozilla and found on mozilla.org.
 
 #### Technical details
 
-##### aka understanding this mess
 - The popup the user interacts with is called "config", under `popup/`. It has an HTML and CSS file as you'd expect, defining the styles.
 - `config.js` defines interactions with buttons on the config popup, and fires every time it is clicked to grab all current browser window tabs
 - `config.js` requests the background script, `scripts/background.js`, to monitor the tab requested
